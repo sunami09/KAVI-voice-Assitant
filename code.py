@@ -1,18 +1,12 @@
 import speech_recognition as sr
 import pyttsx3
+from PIL import Image
 import pywhatkit
-import datetime
 import pyjokes
 import wikipedia
-from datetime import datetime
 from geopy.geocoders import Nominatim
-import os
-import psutil
 from bs4 import BeautifulSoup
 import requests
-
-
-
 
 
 listener = sr.Recognizer()
@@ -21,9 +15,18 @@ voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 
 
+def img_requests(txt):
+    response=requests.get("https://source.unsplash.com/random{0}".format(txt))
+    file=open('container.jpg','wb')
+    file.write(response.content)
+    img=Image.open(r"container.jpg")
+    img.show()
+    file.close
+
 def talk(text):
     engine.say(text)
     engine.runAndWait()
+
 
 
 hi = 0
@@ -57,46 +60,62 @@ def take_command():
         pass
     return command
 
-
-
-
-
 def run_kavi():
     command = take_command()
     print(command)
+
     if 'play' in command:
         talk('playing')
         print('playing')
         song = command.replace('play', '')
         talk('playing ' + song)
         pywhatkit.playonyt(song)
+    elif 'images' in command:
+        talk("""Please provide an option for Image
+        # 1, HD Random Picture
+        # 2, FHD Random Picture
+        # 3, 2K Random Picture
+        # 4, 4k Random Picture
+        # 5, Picture with User Provided Keywords """)
+        ans=take_command()
+        print("Provided Input: ",ans)            
+        talk("Please wait while we fetch the images from our database.")
+        if 'one' in ans or '1' in ans or 'won' in ans:
+            img_requests('/1280x720')
+        elif 'two' in ans or '2' in ans or 'tu' in ans:            
+            img_requests('/1920x1080')
+        elif 'three' in ans or '3' in ans or 'tree' in ans or 'free' in ans:
+            img_requests('/2048x1080')
+        elif 'four' in ans or '4' in ans or 'for' in ans:
+            img_requests('/4096x2160')
+        elif 'five' in ans or '5' in ans  or 'fibe' in ans:
+            talk("speak keywords seperated by commas ")
+            st=take_command()
+            if 'comma' in st:
+                st.replace('comma',',')
+            st="?"+st
+            img_requests(st)
+        else:
+            talk("Please provide a valid Input")
     elif 'whatsapp' in command:
         pywhatkit.sendwhatmsg("+91 93611 40968", "hello iam kavi,my boss has told me to text any important info",
-                              13, 58)
+                              19, )
         print("Successfully Sent!")
     elif 'who is' in command:
         person = command.replace('who is', '')
-        source = wikipedia.summary(person, 100)
+        source = wikipedia.summary(person, 20)
         print(source)
         talk(source)
     elif 'search' in command:
         info = command.replace('search', '')
-        general = wikipedia.search(info, 100)
+        general = wikipedia.search(info, 20)
         print(general)
         talk(general)
     elif 'history' in command:
         gen = command.replace('history, battle, movie review', '')
-        small = wikipedia.summary(gen, 100)
+        small = wikipedia.summary(gen, 20)
         print(small)
         talk(small)
-    elif 'health' in command:
-        load1, load5, load15 = psutil.getloadavg()
-        cpu_usage = (load15 / os.cpu_count()) * 100
-        cd = ("My health was in good condition because your'e using me in good way (cpu usage) : ", cpu_usage)
-        talk(cd)
-    elif 'memory' in command:
-        bc = (psutil.virtual_memory()[2])
-        talk(bc)
     elif 'location' in command:
         loc = Nominatim(user_agent="GetLoc")
         getloc = loc.geocode("Coimbatore")
@@ -146,11 +165,23 @@ def run_kavi():
     elif 'what is your name' in command:
         talk('My devloper karunakran has named me kkavi')
     elif 'cringe' in command:
-        talk('alright........he/she was funniest perosn')
+        talk('alright........he/she was funniest personn')
     elif 'joke' in command:
         joke = pyjokes.get_joke()
         print(joke)
         talk(joke)
+    elif 'i am tired' in command:
+        talk('you should take a break')
+    elif 'favorite game' in command:
+        talk('my favorite game is chess')
+    elif 'can you dance' in command:
+        talk('I cant dance as of now, but I can play some dance music')
+    elif 'how do i look' in command:
+        talk('juding from your voice, amazing')
+    elif 'can you cook' in command:
+        talk('i can cook you up amazing bedtime stories if you want')
+    elif 'who is your friend' in command:
+        talk('her name is nilla voice assistant, she was in another repository')
     else:
         talk('cant get it....please say it again')
 
