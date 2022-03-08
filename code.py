@@ -1,14 +1,24 @@
 import os
 import subprocess
+# text to speech modules
 import speech_recognition as sr
 import pyttsx3
-import pywhatkit
-import pyjokes
-import wikipedia
-import webbrowser
-import requests
-import os
-import psutil
+
+
+#Sub-modules for Assitant
+import wikipedia #information API
+import webbrowser #To open Web browser
+import pywhatkit #to automate whatsapp
+import pyjokes #jokes
+import requests #HTTP requests
+
+
+
+
+import os # Alapan etake sora already imported
+
+
+import psutil 
 import datetime
 from email.mime import audio
 from numpy import place
